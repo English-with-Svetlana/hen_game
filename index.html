@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ✅ ЗАПРЕТ КЭШИРОВАНИЯ БРАУЗЕРОМ -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Hen Grammar Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; }
+#game-container { width: 100%; height: 100%; position: relative; overflow: hidden; background: transparent; }
+.hen { width: 70px; height: 70px; position: absolute; cursor: pointer; transition: transform 0.1s; z-index: 1; }
+.hen:hover { transform: scale(1.3); filter: drop-shadow(0 0 6px #d4af37); }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: linear-gradient(135deg, #0a2a4e 0%, #1b5b8e 50%, #0a2a4e 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 30px 35px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 144, 255, 0.3); animation: modalAppear 0.4s ease-out; }
+@keyframes modalAppear { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-sentence { font-size: 20px; color: #f0f6ff; text-align: center; margin-bottom: 25px; font-family: Georgia, serif; line-height: 1.5; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+.modal-options { display: flex; flex-direction: column; gap: 12px; }
+.option-btn { padding: 14px 20px; font-size: 17px; border: 2px solid #d4af37; border-radius: 12px; background: linear-gradient(135deg, rgba(30, 100, 180, 0.6), rgba(60, 150, 220, 0.4)); color: #f0f6ff; cursor: pointer; transition: all 0.3s; font-family: Georgia, serif; }
+.option-btn:hover { background: linear-gradient(135deg, rgba(60, 144, 220, 0.6), rgba(212, 175, 55, 0.3)); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
+.option-btn.correct { background: linear-gradient(135deg, #1b5e20, #4caf50) !important; border-color: #4caf50 !important; box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); animation: correctPulse 0.5s; }
+.option-btn.wrong { background: linear-gradient(135deg, #b71c1c, #f44336) !important; border-color: #f44336 !important; box-shadow: 0 0 20px rgba(244, 67, 54, 0.5); animation: wrongShake 0.5s; }
+@keyframes correctPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes wrongShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+.firework { position: fixed; pointer-events: none; z-index: 2000; }
+.firework-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; animation: fireworkBurst 1s ease-out forwards; }
+@keyframes fireworkBurst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
+.final-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+.final-overlay.active { display: flex; }
+.final-box { background: linear-gradient(135deg, #0a2a4e 0%, #1b5b8e 50%, #0a2a4e 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 40px 50px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 144, 255, 0.3); animation: modalAppear 0.4s ease-out; text-align: center; }
+.final-text { font-size: 50px; font-family: Georgia, serif; color: #d4af37; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(30, 144, 255, 0.5); animation: finalPulse 2s infinite; }
+@keyframes finalPulse { 0%, 100% { transform: scale(1); text-shadow: 0 0 30px rgba(212, 175, 55, 0.8); } 50% { transform: scale(1.05); text-shadow: 0 0 50px rgba(212, 175, 55, 1), 0 0 80px rgba(30, 144, 255, 0.6); } }
+.final-firework { position: fixed; pointer-events: none; z-index: 3001; }
+.final-particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; animation: finalBurst 1.5s ease-out forwards; }
+@keyframes finalBurst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
+</style>
+</head>
+<body>
+<div id="game-container"></div>
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-sentence" id="modal-sentence"></div>
+    <div class="modal-options" id="modal-options"></div>
+  </div>
+</div>
+<div class="final-overlay" id="final-overlay">
+  <div class="final-box">
+    <div class="final-text">🎉 Well done! </div>
+  </div>
+</div>
+<script>
+if (window.__henGameStarted) {
+  if (window.__henAnimFrame) cancelAnimationFrame(window.__henAnimFrame);
+  document.getElementById("game-container").innerHTML = "";
+  henElements = [];
+}
+window.__henGameStarted = true;
+
+const tasks = [
+  { sentence: "My brother ___ every week.", options: ["read", "reads", "is reading"], correct: 1 },
+  { sentence: "Her sister ___ now.", options: ["draws", "are drawing", "is drawing"], correct: 2 },
+  { sentence: "They ___ at the moment.", options: ["are playing", "play", "plays"], correct: 0 },
+  { sentence: "I ___ every day.", options: ["am cooking", "cook", "is cooking"], correct: 1 },
+  { sentence: "The cat ___ right now.", options: ["sleeps", "is sleeping", "sleep"], correct: 1 },
+  { sentence: "We sometimes ___.", options: ["meet", "are meeting", "meets"], correct: 0 },
+  { sentence: "My parents ___ every year.", options: ["is traveling", "travel", "travels"], correct: 1 },
+  { sentence: "She usually ___.", options: ["is dancing", "dances", "dance"], correct: 1 },
+  { sentence: "He ___ now.", options: ["is working", "works", "work"], correct: 0 },
+  { sentence: "They ___ their friends every month.", options: ["are visiting", "visits", "visit"], correct: 2 },
+  { sentence: "I ___ TV at the moment.", options: ["am watching", "is watching", "watch"], correct: 0 },
+  { sentence: "The dog always ___.", options: ["barks", "is barking", "bark"], correct: 0 },
+  { sentence: "We ___ right now.", options: ["cook", "cooks", "are cooking"], correct: 2 },
+  { sentence: "She never ___.", options: ["smiles", "is smiling", "smile"], correct: 0 },
+  { sentence: "He ___ now.", options: ["are running", "is running", "runs"], correct: 1 },
+  { sentence: "They ___ their house every week.", options: ["are cleaning", "clean", "cleans"], correct: 1 },
+  { sentence: "My friend ___ at the moment.", options: ["studies", "is studying", "study"], correct: 1 },
+  { sentence: "I usually ___ in the park.", options: ["am walking", "walk", "walks"], correct: 1 },
+  { sentence: "She ___ right now.", options: ["paints", "is painting", "are painting"], correct: 1 },
+  { sentence: "They sometimes ___.", options: ["are swimming", "swim", "swims"], correct: 1 }
+];
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudioCtx() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
+function playClickSound() { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.frequency.setValueAtTime(800, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1); gain.gain.setValueAtTime(0.3, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15); osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15); }
+function playCorrectSound() { const ctx = getAudioCtx(); const notes = [523, 659, 784, 1047]; notes.forEach((freq, i) => { const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = "sine"; osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12); gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.12); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.12 + 0.3); osc.start(ctx.currentTime + i * 0.12); osc.stop(ctx.currentTime + i * 0.12 + 0.3); }); }
+function playWrongSound() { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = "sawtooth"; osc.frequency.setValueAtTime(200, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.4); gain.gain.setValueAtTime(0.2, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4); osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4); }
+function playVictorySound() { const ctx = getAudioCtx(); const melody = [523, 587, 659, 784, 880, 1047, 1175, 1319]; melody.forEach((freq, i) => { const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = "sine"; osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15); gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.15); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.4); osc.start(ctx.currentTime + i * 0.15); osc.stop(ctx.currentTime + i * 0.15 + 0.4); }); }
+function createFirework(x, y, container, count = 20) { const fw = document.createElement("div"); fw.className = container === document.body ? "final-firework" : "firework"; fw.style.left = x + "px"; fw.style.top = y + "px"; const colors = ["#d4af37", "#ffd700", "#ff69b4", "#9b59b6", "#e74c3c", "#3498db", "#2ecc71"]; for (let i = 0; i < count; i++) { const p = document.createElement("div"); const angle = (Math.PI * 2 / count) * i; const dist = 40 + Math.random() * 60; const tx = Math.cos(angle) * dist; const ty = Math.sin(angle) * dist; p.className = container === document.body ? "final-particle" : "firework-particle"; p.style.setProperty("--tx", tx + "px"); p.style.setProperty("--ty", ty + "px"); p.style.background = colors[Math.floor(Math.random() * colors.length)]; p.style.left = "0px"; p.style.top = "0px"; fw.appendChild(p); } container.appendChild(fw); setTimeout(() => fw.remove(), 1500); }
+let henElements = []; let currentHenIndex = -1; let henRemaining = 20; let answered = false;
+const container = document.getElementById("game-container");
+
+function createHen() { 
+  for (let i = 0; i < 20; i++) { 
+    const hen = document.createElement("img"); 
+    hen.src = "https://i.ibb.co/NhfXxvB/hen.png"; 
+    hen.className = "hen"; 
+    hen.dataset.index = i; 
+    const maxX = window.innerWidth - 70; 
+    const maxY = window.innerHeight - 70; 
+    let x = Math.random() * maxX; 
+    let y = Math.random() * maxY; 
+    hen.style.left = x + "px"; 
+    hen.style.top = y + "px"; 
+    const angle = Math.random() * Math.PI * 2; 
+    const speed = 0.1 + Math.random() * 0.2; 
+    hen.dataset.vx = Math.cos(angle) * speed; 
+    hen.dataset.vy = Math.sin(angle) * speed; 
+    hen.dataset.x = x; 
+    hen.dataset.y = y; 
+    
+    hen.addEventListener("click", function(e) {
+      e.stopPropagation();
+      if (currentHenIndex !== -1 || this.style.display === "none") return;
+      const idx = parseInt(this.dataset.index);
+      currentHenIndex = idx;
+      answered = false;
+      playClickSound();
+      setTimeout(() => showModal(idx), 100);
+    });
+    
+    container.appendChild(hen); 
+    henElements.push(hen); 
+  } 
+}
+
+function animateHen() { 
+  const maxX = window.innerWidth - 70; 
+  const maxY = window.innerHeight - 70; 
+  henElements.forEach(hen => { 
+    if (hen.style.display === "none") return; 
+    let x = parseFloat(hen.dataset.x); 
+    let y = parseFloat(hen.dataset.y); 
+    let vx = parseFloat(hen.dataset.vx); 
+    let vy = parseFloat(hen.dataset.vy); 
+    if (Math.random() < 0.02) { 
+      vx += (Math.random() - 0.5) * 0.3; 
+      vy += (Math.random() - 0.5) * 0.3; 
+      const speed = Math.sqrt(vx * vx + vy * vy); 
+      if (speed > 0.5) { vx = (vx / speed) * 0.5; vy = (vy / speed) * 0.5; } 
+      if (speed < 0.05) { vx = (vx / speed) * 0.1; vy = (vy / speed) * 0.1; } 
+    } 
+    x += vx; 
+    y += vy; 
+    if (x <= 0) { x = 0; vx = Math.abs(vx); } 
+    if (x >= maxX) { x = maxX; vx = -Math.abs(vx); } 
+    if (y <= 0) { y = 0; vy = Math.abs(vy); } 
+    if (y >= maxY) { y = maxY; vy = -Math.abs(vy); } 
+    hen.dataset.x = x; 
+    hen.dataset.y = y; 
+    hen.dataset.vx = vx; 
+    hen.dataset.vy = vy; 
+    hen.style.left = x + "px"; 
+    hen.style.top = y + "px"; 
+    if (vx < 0) { hen.style.transform = "scaleX(-1)"; } 
+    else { hen.style.transform = "scaleX(1)"; } 
+  }); 
+  window.__henAnimFrame = requestAnimationFrame(animateHen); 
+}
+
+function showModal(index) { 
+  const task = tasks[index]; 
+  const overlay = document.getElementById("modal-overlay"); 
+  const sentenceEl = document.getElementById("modal-sentence"); 
+  const optionsEl = document.getElementById("modal-options"); 
+  sentenceEl.textContent = task.sentence; 
+  optionsEl.innerHTML = ""; 
+  task.options.forEach((opt, i) => { 
+    const btn = document.createElement("button"); 
+    btn.className = "option-btn"; 
+    btn.textContent = opt; 
+    btn.addEventListener("click", () => onOptionClick(btn, i, task.correct)); 
+    optionsEl.appendChild(btn); 
+  }); 
+  overlay.classList.add("active"); 
+}
+
+function onOptionClick(btn, selected, correct) { 
+  if (answered) return; 
+  if (selected === correct) { 
+    answered = true; 
+    btn.classList.add("correct"); 
+    playCorrectSound(); 
+    const rect = btn.getBoundingClientRect(); 
+    createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, document.body, 25); 
+    setTimeout(() => closeModal(), 1500); 
+  } else { 
+    btn.classList.add("wrong"); 
+    playWrongSound(); 
+    setTimeout(() => { btn.classList.remove("wrong"); }, 600); 
+  } 
+}
+
+function closeModal() { 
+  const overlay = document.getElementById("modal-overlay"); 
+  overlay.classList.remove("active"); 
+  if (currentHenIndex !== -1) { 
+    const hen = henElements[currentHenIndex]; 
+    hen.style.display = "none"; 
+    henRemaining--; 
+    if (henRemaining <= 0) { 
+      setTimeout(showFinalScreen, 500); 
+    } 
+  } 
+  currentHenIndex = -1; 
+}
+
+function showFinalScreen() { 
+  const finalOverlay = document.getElementById("final-overlay"); 
+  finalOverlay.classList.add("active"); 
+  playVictorySound(); 
+  
+  const finalBox = document.querySelector(".final-box");
+  const boxRect = finalBox.getBoundingClientRect();
+  const centerX = boxRect.left + boxRect.width / 2;
+  const centerY = boxRect.top + boxRect.height / 2;
+  
+  let count = 0;
+  const interval = setInterval(() => {
+    const x = centerX + (Math.random() - 0.5) * 200;
+    const y = centerY + (Math.random() - 0.5) * 200;
+    createFirework(x, y, document.body, 30);
+    count++;
+    if (count > 15) clearInterval(interval);
+  }, 400);
+}
+
+createHen(); 
+animateHen();
+</script>
+</body>
+</html>
