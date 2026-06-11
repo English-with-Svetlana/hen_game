@@ -16,12 +16,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: transparen
 .hen:hover { transform: scale(1.3); filter: drop-shadow(0 0 6px #d4af37); }
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center; }
 .modal-overlay.active { display: flex; }
-.modal-box { background: linear-gradient(135deg, #0a2a4e 0%, #1b5b8e 50%, #0a2a4e 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 30px 35px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 144, 255, 0.3); animation: modalAppear 0.4s ease-out; }
+.modal-box { background: linear-gradient(135deg, #0a4e2a 0%, #1b8e5b 50%, #0a4e2a 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 30px 35px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 200, 100, 0.3); animation: modalAppear 0.4s ease-out; }
 @keyframes modalAppear { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal-sentence { font-size: 20px; color: #f0f6ff; text-align: center; margin-bottom: 25px; font-family: Georgia, serif; line-height: 1.5; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+.modal-sentence { font-size: 20px; color: #f0fff6; text-align: center; margin-bottom: 25px; font-family: Georgia, serif; line-height: 1.5; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
 .modal-options { display: flex; flex-direction: column; gap: 12px; }
-.option-btn { padding: 14px 20px; font-size: 17px; border: 2px solid #d4af37; border-radius: 12px; background: linear-gradient(135deg, rgba(30, 100, 180, 0.6), rgba(60, 150, 220, 0.4)); color: #f0f6ff; cursor: pointer; transition: all 0.3s; font-family: Georgia, serif; }
-.option-btn:hover { background: linear-gradient(135deg, rgba(60, 144, 220, 0.6), rgba(212, 175, 55, 0.3)); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
+.option-btn { padding: 14px 20px; font-size: 17px; border: 2px solid #d4af37; border-radius: 12px; background: linear-gradient(135deg, rgba(30, 150, 80, 0.6), rgba(60, 200, 120, 0.4)); color: #f0fff6; cursor: pointer; transition: all 0.3s; font-family: Georgia, serif; }
+.option-btn:hover { background: linear-gradient(135deg, rgba(60, 180, 100, 0.6), rgba(212, 175, 55, 0.3)); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
 .option-btn.correct { background: linear-gradient(135deg, #1b5e20, #4caf50) !important; border-color: #4caf50 !important; box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); animation: correctPulse 0.5s; }
 .option-btn.wrong { background: linear-gradient(135deg, #b71c1c, #f44336) !important; border-color: #f44336 !important; box-shadow: 0 0 20px rgba(244, 67, 54, 0.5); animation: wrongShake 0.5s; }
 @keyframes correctPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
@@ -31,9 +31,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: transparen
 @keyframes fireworkBurst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
 .final-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
 .final-overlay.active { display: flex; }
-.final-box { background: linear-gradient(135deg, #0a2a4e 0%, #1b5b8e 50%, #0a2a4e 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 40px 50px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 144, 255, 0.3); animation: modalAppear 0.4s ease-out; text-align: center; }
-.final-text { font-size: 50px; font-family: Georgia, serif; color: #d4af37; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(30, 144, 255, 0.5); animation: finalPulse 2s infinite; }
-@keyframes finalPulse { 0%, 100% { transform: scale(1); text-shadow: 0 0 30px rgba(212, 175, 55, 0.8); } 50% { transform: scale(1.05); text-shadow: 0 0 50px rgba(212, 175, 55, 1), 0 0 80px rgba(30, 144, 255, 0.6); } }
+.final-box { background: linear-gradient(135deg, #0a4e2a 0%, #1b8e5b 50%, #0a4e2a 100%); border: 3px solid #d4af37; border-radius: 20px; padding: 40px 50px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(30, 200, 100, 0.3); animation: modalAppear 0.4s ease-out; text-align: center; }
+.final-text { font-size: 50px; font-family: Georgia, serif; color: #d4af37; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(30, 200, 100, 0.5); animation: finalPulse 2s infinite; }
+@keyframes finalPulse { 0%, 100% { transform: scale(1); text-shadow: 0 0 30px rgba(212, 175, 55, 0.8); } 50% { transform: scale(1.05); text-shadow: 0 0 50px rgba(212, 175, 55, 1), 0 0 80px rgba(30, 200, 100, 0.6); } }
 .final-firework { position: fixed; pointer-events: none; z-index: 3001; }
 .final-particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; animation: finalBurst 1.5s ease-out forwards; }
 @keyframes finalBurst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
@@ -49,7 +49,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: transparen
 </div>
 <div class="final-overlay" id="final-overlay">
   <div class="final-box">
-    <div class="final-text">🎉 Well done! </div>
+    <div class="final-text">🎉 Well done! 🎉</div>
   </div>
 </div>
 <script>
@@ -61,26 +61,26 @@ if (window.__henGameStarted) {
 window.__henGameStarted = true;
 
 const tasks = [
-  { sentence: "My brother ___ every week.", options: ["read", "reads", "is reading"], correct: 1 },
-  { sentence: "Her sister ___ now.", options: ["draws", "are drawing", "is drawing"], correct: 2 },
-  { sentence: "They ___ at the moment.", options: ["are playing", "play", "plays"], correct: 0 },
-  { sentence: "I ___ every day.", options: ["am cooking", "cook", "is cooking"], correct: 1 },
-  { sentence: "The cat ___ right now.", options: ["sleeps", "is sleeping", "sleep"], correct: 1 },
-  { sentence: "We sometimes ___.", options: ["meet", "are meeting", "meets"], correct: 0 },
-  { sentence: "My parents ___ every year.", options: ["is traveling", "travel", "travels"], correct: 1 },
-  { sentence: "She usually ___.", options: ["is dancing", "dances", "dance"], correct: 1 },
-  { sentence: "He ___ now.", options: ["is working", "works", "work"], correct: 0 },
-  { sentence: "They ___ their friends every month.", options: ["are visiting", "visits", "visit"], correct: 2 },
-  { sentence: "I ___ TV at the moment.", options: ["am watching", "is watching", "watch"], correct: 0 },
-  { sentence: "The dog always ___.", options: ["barks", "is barking", "bark"], correct: 0 },
-  { sentence: "We ___ right now.", options: ["cook", "cooks", "are cooking"], correct: 2 },
-  { sentence: "She never ___.", options: ["smiles", "is smiling", "smile"], correct: 0 },
-  { sentence: "He ___ now.", options: ["are running", "is running", "runs"], correct: 1 },
-  { sentence: "They ___ their house every week.", options: ["are cleaning", "clean", "cleans"], correct: 1 },
-  { sentence: "My friend ___ at the moment.", options: ["studies", "is studying", "study"], correct: 1 },
-  { sentence: "I usually ___ in the park.", options: ["am walking", "walk", "walks"], correct: 1 },
-  { sentence: "She ___ right now.", options: ["paints", "is painting", "are painting"], correct: 1 },
-  { sentence: "They sometimes ___.", options: ["are swimming", "swim", "swims"], correct: 1 }
+  { sentence: "My brother ___ every week?", options: ["Do my brother read every week?", "Does my brother read every week?", "Is my brother reading every week?"], correct: 1 },
+  { sentence: "Her sister ___ now?", options: ["Does her sister draw now?", "Are her sister drawing now?", "Is her sister drawing now?"], correct: 2 },
+  { sentence: "They ___ at the moment?", options: ["Are they playing at the moment?", "Do they play at the moment?", "Does they play at the moment?"], correct: 0 },
+  { sentence: "I ___ every day?", options: ["Am I cooking every day?", "Do I cook every day?", "Is I cooking every day?"], correct: 1 },
+  { sentence: "The cat ___ right now?", options: ["Does the cat sleep right now?", "Is the cat sleeping right now?", "Do the cat sleep right now?"], correct: 1 },
+  { sentence: "We sometimes ___?", options: ["Do we sometimes meet?", "Are we sometimes meeting?", "Does we sometimes meet?"], correct: 0 },
+  { sentence: "My parents ___ every year?", options: ["Is my parents travelling every year?", "Do my parents travel every year?", "Does my parents travel every year?"], correct: 1 },
+  { sentence: "She usually ___?", options: ["Is she usually dancing?", "Does she usually dance?", "Do she usually dance?"], correct: 1 },
+  { sentence: "He ___ now?", options: ["Is he working now?", "Does he work now?", "Do he work now?"], correct: 0 },
+  { sentence: "They ___ their friends every month?", options: ["Are they visiting their friends every month?", "Does they visit their friends every month?", "Do they visit their friends every month?"], correct: 2 },
+  { sentence: "I ___ TV at the moment?", options: ["Am I watching TV at the moment?", "Is I watching TV at the moment?", "Do I watch TV at the moment?"], correct: 0 },
+  { sentence: "The dog always ___?", options: ["Does the dog always bark?", "Is the dog always barking?", "Do the dog always bark?"], correct: 0 },
+  { sentence: "We ___ right now?", options: ["Do we cook right now?", "Does we cook right now?", "Are we cooking right now?"], correct: 2 },
+  { sentence: "She never ___?", options: ["Does she never smile?", "Is she never smiling?", "Do never she smile?"], correct: 0 },
+  { sentence: "He ___ now?", options: ["Are he running now?", "Is he running now?", "Does he run now?"], correct: 1 },
+  { sentence: "They ___ their house every week?", options: ["Are they cleaning their house every week?", "Do they clean their house every week?", "Does they clean their house every week?"], correct: 1 },
+  { sentence: "My friend ___ at the moment?", options: ["Does my friend study at the moment?", "Is my friend studying at the moment?", "Do my friend study at the moment?"], correct: 1 },
+  { sentence: "I usually ___ in the park?", options: ["Am I usually walking in the park?", "Do I usually walk in the park?", "Is I usually walking in the park?"], correct: 1 },
+  { sentence: "She ___ right now?", options: ["Does she paint right now?", "Is she painting right now?", "Do she paint right now?"], correct: 1 },
+  { sentence: "They sometimes ___?", options: ["Are they sometimes swimming?", "Do they sometimes swim?", "Does they sometimes swim?"], correct: 1 }
 ];
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
